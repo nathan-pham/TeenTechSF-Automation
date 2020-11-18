@@ -11,5 +11,8 @@
     "teentechsf"
   ],
   "author": "Nathan Pham",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "googleapis": "^39.2.0"
+  }
 }

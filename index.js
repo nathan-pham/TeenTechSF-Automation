@@ -4,6 +4,7 @@ const readline = require("readline");
 const fs = require("fs").promises;
 
 const config = require("./config");
+const payload = require("./payload/index");
 
 const init = async () => {
   let credentials;
@@ -14,28 +15,32 @@ const init = async () => {
   }
 
   const AuthClient = await authorize(credentials);
-  listLabels(AuthClient);
+
+  await blastEmails(AuthClient);
 };
 
-const listLabels = (auth) => {
+const blastEmails = async (auth) => {
   const gmail = google.gmail({ version: "v1", auth });
-  gmail.users.labels.list(
-    {
-      userId: "me",
-    },
-    (err, res) => {
-      if (err) return console.log("The API returned an error: " + err);
-      const labels = res.data.labels;
-      if (labels.length) {
-        console.log("Labels:");
-        labels.forEach((label) => {
-          console.log(`- ${label.name}`);
-        });
-      } else {
-        console.log("No labels found.");
+
+  for (const [key, value] of Object.entries(payload.schools)) {
+    const raw = await payload.generatePayload(value.join(", "), key);
+
+    gmail.users.messages.send(
+      {
+        auth,
+        userId: "me",
+        resource: {
+          raw,
+        },
+      },
+      function (err, response) {
+        if (err) {
+          return console.log("Error sending message.");
+        }
+        console.log("Success!");
       }
-    }
-  );
+    );
+  }
 };
 
 const authorize = async (credentials) => {
@@ -46,10 +51,9 @@ const authorize = async (credentials) => {
     redirect_uris[0]
   );
   try {
-    const token = JSON.parse(await fs.readFile(config.tokenPath));
-    AuthClient.setCredentials(token);
+    AuthClient.setCredentials(JSON.parse(await fs.readFile(config.tokenPath)));
   } catch (e) {
-    AuthClient = await newToken(AuthClient);
+    AuthClient.setCredentials(await newToken(AuthClient));
   }
   return AuthClient;
 };
@@ -74,8 +78,7 @@ const newToken = (AuthClient) => {
         }
         await fs.writeFile(config.tokenPath, JSON.stringify(token));
         console.log(`Token saved to ${config.tokenPath}`);
-        AuthClient.setCredentials(token);
-        resolve(AuthClient);
+        resolve(token);
       });
     });
   });

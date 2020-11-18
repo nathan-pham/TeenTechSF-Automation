@@ -1,0 +1,15 @@
+{
+  "name": "teentechsf-automation",
+  "version": "1.0.0",
+  "description": "Automating an email list for TeenTechSF",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "automation",
+    "teentechsf"
+  ],
+  "author": "Nathan Pham",
+  "license": "ISC"
+}

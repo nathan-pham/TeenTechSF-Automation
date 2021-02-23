@@ -5,7 +5,7 @@ const path = require("path")
 const converter = new showdown.Converter()
 const session = "speaker-series"
 const files = {
-    data: require(`./${session}/data.json`),
+    data: require(`./${session}/test.json`),
     template: `${__dirname}/${session}/template.md`
 }
 

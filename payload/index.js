@@ -1,42 +1,75 @@
-const fs = require("fs").promises;
+const showdown = require("showdown")
+const fs = require("fs").promises
+const path = require("path")
 
-const schools = require("./data.js");
+const converter = new showdown.Converter()
+const session = "speaker-series"
+const files = {
+    data: require(`./${session}/data.json`),
+    template: `${__dirname}/${session}/template.md`
+}
 
-const render = async (location, data) => {
-  let message = (await fs.readFile(location)).toString();
+const extract = (template) => {
+    let matches = template.match(/---((.|\n)*)---/gi)
+    matches = matches ? matches[0] : ""
 
-  for (const [key, value] of Object.entries(data)) {
-    let reg = new RegExp(`{{${key}}}`, "gi");
-    message = message.replace(reg, value);
-  }
+    const filtered = matches
+        ? matches.split('\n').filter(v => !v.includes("---"))
+        : []
+    const metadata = {}
 
-  return message;
-};
+    for(const line of filtered) {
+        const [key, value] = line.split(':').map(v => v.trim())
+        metadata[key] = value   
+    }
 
-const generatePayload = async (to, name) => {
-  const message = await render(__dirname + "/template.html", {
-    name,
-  });
+    return {
+        metadata,
+        matches
+    }
+}
 
-  const payload = [
-    'Content-Type: text/html; charset="UTF-8"',
-    "MIME-VERSION: 1.0",
-    "Content-Transfer-Encoding: 7bit",
-    `From: phamn23@puhsd.k12.ca.us`,
-    `To: ${to}`,
-    "Cc: bwhitney925@gmail.com",
-    'Subject: FREE! 12/12 TeenTechSF Global Youth Summit: "Tech & Health: Understand More, Fear Less"\n',
-    message,
-  ].join("\n");
+const render = async (template, data) => {
+    let markdown = (await fs.readFile(template)).toString()
+    let { metadata, matches } = extract(markdown)
+    let html = converter.makeHtml(markdown.replace(matches, ""))
 
-  const encoded = new Buffer(payload)
-    .toString("base64")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
-  return encoded;
-};
+    for(const [key, value] of Object.entries(data)) {
+        html = html.replace(
+            new RegExp(`{{\s*${key}\s*}}`, "gi"),
+            value
+        )
+    }
+
+    return {
+        html,
+        metadata
+    }
+}
+
+const create = async (to, data) => {
+    const { html, metadata } = await render(files.template, data)
+
+    const payload = [
+        'Content-Type: text/html; charset="UTF-8"',
+        "MIME-VERSION: 1.0",
+        "Content-Transfer-Encoding: 7bit",
+        `From: phamn23@puhsd.k12.ca.us`,
+        `To: ${to}`,
+        `Cc: ${metadata.cc}`,
+        `Subject: ${metadata.subject}\n`,
+        html
+    ].join('\n')
+
+    return Buffer.from(payload)
+        .toString("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+}
 
 module.exports = {
-  generatePayload,
-  schools,
-};
+    files,
+    render,
+    create,
+    extract
+}

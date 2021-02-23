@@ -13,6 +13,7 @@
   "author": "Nathan Pham",
   "license": "ISC",
   "dependencies": {
-    "googleapis": "^39.2.0"
+    "googleapis": "^39.2.0",
+    "showdown": "^1.9.1"
   }
 }

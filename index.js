@@ -1,87 +1,104 @@
-const { google } = require("googleapis");
+const { google } = require("googleapis")
+const readline = require("readline")
+const fs = require("fs").promises
+const payload = require("./payload")
+const { scope, tokenPath } = require("./config")
 
-const readline = require("readline");
-const fs = require("fs").promises;
+const authenticate = async () => {
+    let credentials = {}
 
-const config = require("./config");
-const payload = require("./payload/index");
+    try {
+        credentials = require("./credentials.json")
+    }
+    catch(e) {
+        console.log("no credentials")
+    }
 
-const init = async () => {
-  let credentials;
-  try {
-    credentials = JSON.parse(await fs.readFile("credentials.json"));
-  } catch (e) {
-    return console.log("Failed to load credentials.");
-  }
-
-  const AuthClient = await authorize(credentials);
-
-  await blastEmails(AuthClient);
-};
-
-const blastEmails = async (auth) => {
-  const gmail = google.gmail({ version: "v1", auth });
-
-  for (const [key, value] of Object.entries(payload.schools)) {
-    const raw = await payload.generatePayload(value.join(", "), key);
-
-    gmail.users.messages.send(
-      {
-        auth,
-        userId: "me",
-        resource: {
-          raw,
-        },
-      },
-      function (err, response) {
-        if (err) {
-          return console.log("Error sending message.");
-        }
-        console.log("Success!");
-      }
-    );
-  }
-};
+    return authorize(credentials)
+}
 
 const authorize = async (credentials) => {
-  const { client_secret, client_id, redirect_uris } = credentials.installed;
-  const AuthClient = new google.auth.OAuth2(
-    client_id,
-    client_secret,
-    redirect_uris[0]
-  );
-  try {
-    AuthClient.setCredentials(JSON.parse(await fs.readFile(config.tokenPath)));
-  } catch (e) {
-    AuthClient.setCredentials(await newToken(AuthClient));
-  }
-  return AuthClient;
-};
+    const {
+        client_id,
+        client_secret,
+        redirect_uris
+    } = credentials.installed
+
+    const AuthClient = new google.auth.OAuth2(
+        client_id,
+        client_secret,
+        redirect_uris[0]
+    )
+
+    try {
+        AuthClient.setCredentials(
+            JSON.parse(await fs.readFile(tokenPath))
+        )
+    }
+    catch(e) {
+        AuthClient.setCredentials(await newToken(AuthClient))
+    }
+    
+    return AuthClient
+}
+
 
 const newToken = (AuthClient) => {
-  const authURL = AuthClient.generateAuthUrl({
-    access_type: "offline",
-    scope: config.scopes,
-  });
-  console.log(`Visit ${authURL} to authorize this app.`);
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
+    const url = AuthClient.generateAuthUrl({
+        access_type: "offline",
+        scope
+    })
 
-  return new Promise((resolve, reject) => {
-    rl.question("Enter your code: ", (code) => {
-      rl.close();
-      AuthClient.getToken(code, async (err, token) => {
-        if (err) {
-          reject("Could not retrieve access token.");
-        }
-        await fs.writeFile(config.tokenPath, JSON.stringify(token));
-        console.log(`Token saved to ${config.tokenPath}`);
-        resolve(token);
-      });
-    });
-  });
+    console.log(`visit ${url} to authorize this app`)
+
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    })
+
+    return new Promise((resolve, reject) => {
+        rl.question("code: ", (code) => {
+            rl.close()
+            AuthClient.getToken(code, async (err, token) => {
+                if(err) {
+                    reject("invalid access token")
+                }
+                
+                await fs.writeFile(tokenPath, JSON.stringify(token))
+                console.log(`token saved to ${tokenPath}`)
+                resolve(token)
+            })
+        })
+    })
+}
+
+
+const blastEmails_ = async (auth) => {
+  
 };
 
-init();
+
+const blastEmails = async () => {
+    const AuthClient = await authenticate()
+
+    const gmail = google.gmail({ version: "v1", auth: AuthClient })
+
+    for(const [key, value] of Object.entries(payload.files.data)) {
+        const raw = await payload.create(value, {
+            name: key
+        })
+
+        gmail.users.messages.send({
+            auth: AuthClient,
+            userId: "me",
+            resource: { raw }
+        }, (err, res) => {
+            console.log(err
+                ? `error sending message to ${key}`
+                : "success"
+            )
+        })
+    }
+}
+
+blastEmails()

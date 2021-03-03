@@ -3,7 +3,7 @@ const fs = require("fs").promises
 const path = require("path")
 
 const converter = new showdown.Converter()
-const session = "speaker-series"
+const session = "spring-workshops"
 const files = {
     data: require(`./${session}/test.json`),
     template: `${__dirname}/${session}/template.md`

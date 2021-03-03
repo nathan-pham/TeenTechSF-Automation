@@ -1,5 +1,5 @@
----
-subject: FREE! TeenTechSF Spring Workshops starting 3/20!
+--- 
+subject: FREE! TeenTechSF Spring Workshops starting 3/20! 
 cc: bwhitney925@gmail.com
 ---
 
@@ -12,18 +12,18 @@ TeenTechSF workshops provide a fun and easy introduction to educational opportun
 Please share this information with your middle and high school students or let us know if you would like to set up a special TeenTechSF workshop online for your community!  
 
 We are offering the following STEM workshops in our online TeenTechSF spring series:  
-* March 20: COVID-19 Vaccines and Data Analysis  
-* March 27: App Development with MIT App Inventor  
-* April 3: PyGame: Intro to Game Design with Python 2  
+* March 20: COVID-19 Vaccines and Data Analysis
+* March 27: App Development with MIT App Inventor
+* April 3: PyGame: Intro to Game Design with Python 2
 
 * *April 10: STEM Inclusivity Forum - join us for a conversation on inclusivity in tech,  
-and learn about ways you can get involved in STEM during our networking break!*  
+and learn about ways you can get involved in STEM during our networking break!*
 
-* April 17: 3D Design: Create Your Own Robot with OnShape  
-* April 24: 3D Design with OnShape 2: Designing a Spinner  
-* May 1: 3D Design with OnShape 3: Objects in Motion  
-* May 8: Web Development 3 with HTML/CSS  
-* May 15: Programming a Google Chrome Extension  
+* April 17: 3D Design: Create Your Own Robot with OnShape
+* April 24: 3D Design with OnShape 2: Designing a Spinner
+* May 1: 3D Design with OnShape 3: Objects in Motion
+* May 8: Web Development 3 with HTML/CSS
+* May 15: Programming a Google Chrome Extension 
 
 **SAVE THE DATE, March 13th at 1pm - join us for a special conversation on SPORTS + TECH with Swupnil Sahai, the Co-Founder and CEO of SwingVision, a UC Berkeley Instructor, and a former Tesla Computer Vision Engineer! [ttsf-dte-speakers.eventbrite.com](http://ttsf-dte-speakers.eventbrite.com)**  
 

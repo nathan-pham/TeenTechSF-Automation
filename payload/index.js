@@ -5,12 +5,12 @@ const path = require("path")
 const converter = new showdown.Converter()
 const session = "spring-workshops"
 const files = {
-    data: require(`./${session}/test.json`),
+    data: require(`./${session}/data.json`),
     template: `${__dirname}/${session}/template.md`
 }
 
 const extract = (template) => {
-    let matches = template.match(/---((.|\n)*)---/gi)
+    let matches = template.match(/---((.|\n|\r)*)---/gim)
     matches = matches ? matches[0] : ""
 
     const filtered = matches

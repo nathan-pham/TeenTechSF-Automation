@@ -72,12 +72,6 @@ const newToken = (AuthClient) => {
     })
 }
 
-
-const blastEmails_ = async (auth) => {
-  
-};
-
-
 const blastEmails = async () => {
     const AuthClient = await authenticate()
 

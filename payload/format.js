@@ -36,7 +36,7 @@ for(const line of lines) {
     }
     else {
         const words = parse(line.split(' ')).join(' ')
-        const school = (words.match(/.+(hs|is|ms|school|academy|district)\s+?/gim) || [""])[0].split("\t")[0].trim()
+        const school = (words.match(/.+(hs|is|ms|school|academy|district|library|college|space)\s+?/gim) || [""])[0].split("\t")[0].trim()
         const email = (words.match(/\S+@\S*/gim) || [""])[0].trim()
             
         if(school && email) {

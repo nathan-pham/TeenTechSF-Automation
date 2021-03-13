@@ -1,5 +1,5 @@
 --- 
-subject: Subject line (week of March 8th) - FREE! TeenTechSF STEM Inclusivity Forum, Speaker Series, and STEM Workshops this Spring!  
+subject: FREE! TeenTechSF STEM Inclusivity Forum, Speaker Series, and STEM Workshops this Spring!  
 cc: bwhitney925@gmail.com
 ---
 

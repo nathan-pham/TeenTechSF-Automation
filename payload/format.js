@@ -6,8 +6,8 @@ const fs = require("fs")
 const path = require("path")
 
 const resolve = (file) => path.join(__dirname, file)
-const input = resolve("./spring-workshops/raw.txt")
-const output = resolve("./spring-workshops/data.json")
+const input = resolve("./sif-outreach/raw.txt")
+const output = resolve("./sif-outreach/data.json")
 
 const json = {}
 
@@ -36,7 +36,7 @@ for(const line of lines) {
     }
     else {
         const words = parse(line.split(' ')).join(' ')
-        const school = (words.match(/.+(hs|is|ms|school|academy|district|library|college|space)\s+?/gim) || [""])[0].split("\t")[0].trim()
+        const school = (words.match(/.+(hs|is|ms|elementary|school|institute|academy|district|library|college|space)\s+?/gim) || [""])[0].split("\t")[0].trim()
         const email = (words.match(/\S+@\S*/gim) || [""])[0].trim()
             
         if(school && email) {

@@ -1,5 +1,5 @@
 --- 
-subject: FREE! 4/10 TeenTechSF STEM Inclusivity Forum: “Crossing the Digital Divide”    
+subject: FREE! 4/10 TeenTechSF STEM Inclusivity Forum: "Crossing the Digital Divide"      
 cc: bwhitney925@gmail.com
 ---
 

@@ -3,7 +3,7 @@ const fs = require("fs").promises
 const path = require("path")
 
 const converter = new showdown.Converter()
-const session = "sif-outreach"
+const session = "sif-outreach-2"
 const files = {
     data: require(`./${session}/data.json`),
     template: `${__dirname}/${session}/template.md`
@@ -19,8 +19,10 @@ const extract = (template) => {
     const metadata = {}
 
     for(const line of filtered) {
-        const [key, value] = line.split(':').map(v => v.trim())
-        metadata[key] = value   
+        const [key, value, ...rest] = line.split(':').map(v => v.trim())
+        metadata[key] = rest.length > 0
+            ? value + ": " + rest.join(' ')
+            : value
     }
 
     return {
